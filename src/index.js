@@ -15,9 +15,16 @@ const insertPokemonIntoDOM = ({ url }) =>
         let pokemonItem = ''
 
         pokemonItem += `<li>`
-        pokemonItem += `<h3>${name}</h3>`
-        pokemonItem += `<div>`
+        pokemonItem += `<h3>Name: ${name}</h3>`
 
+        pokemonItem += `<div class="types">`
+        for (let key in types) {
+            const type = types[key]
+            pokemonItem += `<span>${type.type.name}</span>`
+        }
+        pokemonItem += `</div>`
+
+        pokemonItem += `<div>`
         for (let key in sprites) {
             const imageUrl = sprites[key]
 
@@ -25,17 +32,6 @@ const insertPokemonIntoDOM = ({ url }) =>
 
             pokemonItem += `<img src=${imageUrl} alt=${key}>`
         }
-
-        pokemonItem += `<div class="types">`
-        
-        for (let key in types) {
-            const type = types[key]
-            pokemonItem += `<span>${type.type.name}</span>`
-        }
-        
-        pokemonItem += `</div>`
-
-
         pokemonItem += `</div>`
 
         pokemonItem += `</li>`
@@ -53,7 +49,7 @@ const getPokemons = (url) => fetch(url)
 
         results.forEach(pokemon => {
             insertPokemonIntoDOM(pokemon)
-            .then(console.log)
+                .then(console.log)
         })
 
         // if (next) getPokemons(next)
