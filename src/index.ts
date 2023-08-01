@@ -1,11 +1,7 @@
+const title = document.getElementById('title')
+const pokemonList: HTMLUListElement | null = document.querySelector('.pokemon_list')
 
-const titulo = document.getElementById('titulo')
-const colorPicker = document.getElementById('color')
-const pokemonList = document.querySelector('.pokemon_list')
-
-const url = 'https://pokeapi.co/api/v2/pokemon'
-
-const insertPokemonIntoDOM = ({ url }) =>
+const insertPokemonIntoDOM = ({ url }: {url: string}) =>
     new Promise(async (resolve, reject) => {
         const pokemon = await fetch(url)
             .then(res => res.json())
@@ -37,31 +33,7 @@ const insertPokemonIntoDOM = ({ url }) =>
         pokemonItem += `</li>`
 
 
-        pokemonList.innerHTML += pokemonItem
+        // pokemonList.innerHTML += pokemonItem
         resolve(`Pokemon: ${name} added`)
     })
 
-const getPokemons = (url) => fetch(url)
-    .then(response => response.json())
-    .then(({ results, next, ...rest }) => {
-
-        console.log(rest);
-
-        results.forEach(pokemon => {
-            insertPokemonIntoDOM(pokemon)
-                .then(console.log)
-        })
-
-        // if (next) getPokemons(next)
-
-    })
-    .catch(console.error)
-
-getPokemons(url)
-
-colorPicker.addEventListener('change', event => {
-    const input = event.target
-    const color = input.value
-
-    titulo.style.color = color
-})
