@@ -1,23 +1,46 @@
-const url = 'https://pokeapi.co/api/v2/pokemon'
+type Pokemon = {
+    name: string
+    url: string
+}
+
+type PokemonType = {
+    slot: number,
+    type: {
+        name: string,
+        url: string
+    }
+}
+
+interface PokemonDetails {
+    name: string;
+    sprites: Record<string, string>;
+    types: PokemonType[];
+}
 
 
-const fetchPokemons = (url: string) => fetch(url)
-    .then(response => response.json())
-    .then(({ results, next, ...rest }) => {
+const fetcher = async (url: string) => {
+    try {
+        const response = await fetch(url)
 
-        console.log(rest);
+        if (!response.ok) {
+            throw new Error(`Error fetching data`)
+        }
 
-        // results.forEach(pokemon => {
-        //     insertPokemonIntoDOM(pokemon)
-        //         .then(console.log)
-        // })
+        return await response.json()
 
-        // if (next) getPokemons(next)
+    } catch (err) {
+        console.error(err)
+    }
+}
 
-    })
-    .catch(console.error)
+const fetchPokemons = async () => {
+    const url = 'https://pokeapi.co/api/v2/pokemon'
 
-fetchPokemons(url)
+    return fetcher(url)
+}
 
+async function getPokemonDetails(url: string): Promise<PokemonDetails> {
+    const details = await fetcher(url)
 
-const pokemon = {}
+    return details
+}

@@ -1,39 +1,50 @@
 const title = document.getElementById('title')
 const pokemonList: HTMLUListElement | null = document.querySelector('.pokemon_list')
 
-const insertPokemonIntoDOM = ({ url }: {url: string}) =>
-    new Promise(async (resolve, reject) => {
-        const pokemon = await fetch(url)
-            .then(res => res.json())
+const insertPokemonIntoDOM = async (pokemon: PokemonDetails): Promise<void> => {
 
-        const { name, sprites, types, ...rest } = pokemon
+    console.log(pokemon)
+    const { name, sprites, types, ...rest } = pokemon
 
-        let pokemonItem = ''
+    let pokemonItem = ''
 
-        pokemonItem += `<li>`
-        pokemonItem += `<h3>Name: ${name}</h3>`
+    pokemonItem += `<li>`
+    pokemonItem += `<h3>Name: ${name}</h3>`
 
-        pokemonItem += `<div class="types">`
-        for (let key in types) {
-            const type = types[key]
-            pokemonItem += `<span>${type.type.name}</span>`
-        }
-        pokemonItem += `</div>`
+    pokemonItem += `<div class="types">`
+    for (let key in types) {
+        const type = types[key]
+        pokemonItem += `<span>${type.type.name}</span>`
+    }
+    pokemonItem += `</div>`
 
-        pokemonItem += `<div>`
-        for (let key in sprites) {
-            const imageUrl = sprites[key]
+    pokemonItem += `<div>`
+    for (let key in sprites) {
 
-            if (typeof imageUrl !== 'string' || !imageUrl.includes('.png')) continue
+        const hasDefault = key.includes('default')
 
-            pokemonItem += `<img src=${imageUrl} alt=${key}>`
-        }
-        pokemonItem += `</div>`
+        if(!hasDefault) continue
 
-        pokemonItem += `</li>`
+        const imageUrl = sprites[key]
+
+        if (typeof imageUrl !== 'string' || !imageUrl.includes('.png')) continue
+
+        pokemonItem += `<img src=${imageUrl} alt=${key}>`
+    }
+    pokemonItem += `</div>`
+
+    pokemonItem += `</li>`
 
 
-        // pokemonList.innerHTML += pokemonItem
-        resolve(`Pokemon: ${name} added`)
-    })
+    pokemonList!.innerHTML += pokemonItem
+}
 
+this.onload = async () => {
+    const { results: pokemons }: { results: Pokemon[] } = await fetchPokemons()
+
+    pokemons.forEach(async pokemon => {
+        const details = await getPokemonDetails(pokemon.url)
+
+        insertPokemonIntoDOM(details)
+    });
+}
